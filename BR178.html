@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMG Branch 178 - Stock Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="BR178.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-boxes"></i>
+                    <div>
+                        <h1>BMG Branch 178 Stock Management</h1>
+                        <span>Efficient Stock Taking & Loss Prevention System</span>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Branch Manager (Deon de Jongh) | BMG 178</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="alert warning">
+            <i class="fas fa-exclamation-triangle"></i> <strong>Attention:</strong> 3 items are running low on stock. Please reorder soon.
+        </div>
+        
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Total Stock Items</h3>
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat">1,247</div>
+                <div class="stat-label">Active items in inventory</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>Stock Accuracy</h3>
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="stat">98.7%</div>
+                <div class="stat-label">Last count: 2 days ago</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>Low Stock Items</h3>
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="stat">3</div>
+                <div class="stat-label">Items need reordering</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>Monthly Shrinkage</h3>
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat">0.8%</div>
+                <div class="stat-label">Down 0.3% from last month</div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('quick-count', this)">Quick Stock Take</div>
+            <div class="tab" onclick="switchTab('inventory', this)">Inventory Management</div>
+            <div class="tab" onclick="switchTab('reports', this)">Reports & Analytics</div>
+            <div class="tab" onclick="switchTab('loss-prevention', this)">Loss Prevention</div>
+        </div>
+        
+        <!-- Quick Stock Take Tab -->
+        <div id="quick-count" class="tab-content active">
+            <h2><i class="fas fa-clipboard-check"></i> Quick Stock Count</h2>
+            <p class="scan-instruction">Scan items quickly using barcode scanner or manually enter counts</p>
+            
+            <div class="qr-scanner">
+                <i class="fas fa-qrcode"></i>
+                <h3>Ready to Scan</h3>
+                <p>Point barcode scanner at item or use camera to scan QR code</p>
+                <div class="scan-instruction">Press Spacebar to simulate scan</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="barcode">Enter Barcode Manually</label>
+                <input type="text" id="barcode" placeholder="Scan or enter barcode..." onkeypress="handleBarcodeEntry(event)">
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item Code</th>
+                            <th>Item Name</th>
+                            <th>Expected Qty</th>
+                            <th>Counted Qty</th>
+                            <th>Variance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="count-table">
+                        <tr>
+                            <td>BMG-7821</td>
+                            <td>Electrical Wire 2.5mm</td>
+                            <td>150</td>
+                            <td><input type="number" value="150" style="width: 80px;"></td>
+                            <td>0</td>
+                            <td><span class="badge success">Match</span></td>
+                        </tr>
+                        <tr>
+                            <td>BMG-4390</td>
+                            <td>PVC Pipe 1 inch</td>
+                            <td>85</td>
+                            <td><input type="number" value="82" style="width: 80px;"></td>
+                            <td class="low-stock">-3</td>
+                            <td><span class="badge warning">Minor Diff</span></td>
+                        </tr>
+                        <tr>
+                            <td>BMG-5567</td>
+                            <td>Circuit Breaker 20A</td>
+                            <td>60</td>
+                            <td><input type="number" value="60" style="width: 80px;"></td>
+                            <td>0</td>
+                            <td><span class="badge success">Match</span></td>
+                        </tr>
+                        <tr>
+                            <td>BMG-9123</td>
+                            <td>Water Heater Element</td>
+                            <td>42</td>
+                            <td><input type="number" value="40" style="width: 80px;"></td>
+                            <td class="low-stock">-2</td>
+                            <td><span class="badge warning">Minor Diff</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 25px;">
+                <button class="btn btn-success" onclick="completeStockTake()"><i class="fas fa-check-circle"></i> Complete Stock Take</button>
+                <button class="btn btn-secondary" onclick="saveDraft()"><i class="fas fa-save"></i> Save as Draft</button>
+                <button class="btn" onclick="printCountSheet()"><i class="fas fa-print"></i> Print Count Sheet</button>
+            </div>
+        </div>
+        
+        <!-- Inventory Management Tab -->
+        <div id="inventory" class="tab-content">
+            <h2><i class="fas fa-boxes"></i> Inventory Management</h2>
+            <p>View and manage all inventory items, set reorder points, and track stock movements</p>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <div>
+                    <button class="btn" onclick="addNewItem()"><i class="fas fa-plus"></i> Add New Item</button>
+                    <button class="btn btn-secondary" onclick="exportInventory()"><i class="fas fa-file-export"></i> Export Data</button>
+                </div>
+                <div>
+                    <input type="text" placeholder="Search inventory..." style="width: 250px;">
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item Code</th>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Current Stock</th>
+                            <th>Reorder Point</th>
+                            <th>Last Updated</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>BMG-7821</td>
+                            <td>Electrical Wire 2.5mm</td>
+                            <td>Electrical</td>
+                            <td>150</td>
+                            <td>30</td>
+                            <td>2023-10-15</td>
+                            <td><span class="badge success">In Stock</span></td>
+                            <td>
+                                <button class="btn" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BMG-4390</td>
+                            <td>PVC Pipe 1 inch</td>
+                            <td>Plumbing</td>
+                            <td class="low-stock">82</td>
+                            <td>100</td>
+                            <td>2023-10-14</td>
+                            <td><span class="badge danger">Low Stock</span></td>
+                            <td>
+                                <button class="btn" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BMG-5567</td>
+                            <td>Circuit Breaker 20A</td>
+                            <td>Electrical</td>
+                            <td>60</td>
+                            <td>20</td>
+                            <td>2023-10-15</td>
+                            <td><span class="badge success">In Stock</span></td>
+                            <td>
+                                <button class="btn" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BMG-9123</td>
+                            <td>Water Heater Element</td>
+                            <td>Plumbing</td>
+                            <td class="low-stock">40</td>
+                            <td>50</td>
+                            <td>2023-10-13</td>
+                            <td><span class="badge danger">Low Stock</span></td>
+                            <td>
+                                <button class="btn" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>BMG-3345</td>
+                            <td>Steel Nails 3 inch</td>
+                            <td>Hardware</td>
+                            <td>520</td>
+                            <td>200</td>
+                            <td>2023-10-12</td>
+                            <td><span class="badge success">In Stock</span></td>
+                            <td>
+                                <button class="btn" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="alert warning">
+                <i class="fas fa-exclamation-triangle"></i> <strong>Low Stock Alert:</strong> 2 items are below reorder point. Please create purchase orders.
+            </div>
+        </div>
+        
+        <!-- Reports & Analytics Tab -->
+        <div id="reports" class="tab-content">
+            <h2><i class="fas fa-chart-bar"></i> Reports & Analytics</h2>
+            <p>Analyze stock performance, shrinkage rates, and generate reports</p>
+            
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Monthly Shrinkage</h3>
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div style="height: 200px; display: flex; align-items: flex-end; justify-content: space-around; margin-top: 20px;">
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 30px; height: 120px; background-color: #e9ecef; border-radius: 5px; position: relative;">
+                                <div style="position: absolute; bottom: 0; width: 100%; height: 70%; background-color: var(--primary-color); border-radius: 5px;"></div>
+                            </div>
+                            <span style="margin-top: 10px; font-size: 0.8rem;">Jul</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 30px; height: 120px; background-color: #e9ecef; border-radius: 5px; position: relative;">
+                                <div style="position: absolute; bottom: 0; width: 100%; height: 65%; background-color: var(--primary-color); border-radius: 5px;"></div>
+                            </div>
+                            <span style="margin-top: 10px; font-size: 0.8rem;">Aug</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 30px; height: 120px; background-color: #e9ecef; border-radius: 5px; position: relative;">
+                                <div style="position: absolute; bottom: 0; width: 100%; height: 55%; background-color: var(--primary-color); border-radius: 5px;"></div>
+                            </div>
+                            <span style="margin-top: 10px; font-size: 0.8rem;">Sep</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 30px; height: 120px; background-color: #e9ecef; border-radius: 5px; position: relative;">
+                                <div style="position: absolute; bottom: 0; width: 100%; height: 40%; background-color: var(--primary-color); border-radius: 5px;"></div>
+                            </div>
+                            <span style="margin-top: 10px; font-size: 0.8rem;">Oct</span>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: #666;">
+                        Shrinkage decreasing by 0.3% monthly
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Stock Accuracy Trend</h3>
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(var(--success-color) 0% 98.7%, #e9ecef 98.7% 100%); display: flex; align-items: center; justify-content: center;">
+                            <div style="width: 100px; height: 100px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.5rem;">
+                                98.7%
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: #666;">
+                        +0.5% improvement from last quarter
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 30px;">Generate Reports</h3>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px;">
+                <button class="btn" onclick="generateReport('shrinkage')"><i class="fas fa-file-alt"></i> Shrinkage Report</button>
+                <button class="btn" onclick="generateReport('stock-levels')"><i class="fas fa-boxes"></i> Stock Levels Report</button>
+                <button class="btn" onclick="generateReport('discrepancies')"><i class="fas fa-exclamation-triangle"></i> Discrepancies Report</button>
+                <button class="btn" onclick="generateReport('audit-trail')"><i class="fas fa-history"></i> Audit Trail Report</button>
+                <button class="btn btn-success" onclick="generateReport('monthly')"><i class="fas fa-chart-pie"></i> Monthly Summary</button>
+            </div>
+        </div>
+        
+        <!-- Loss Prevention Tab -->
+        <div id="loss-prevention" class="tab-content">
+            <h2><i class="fas fa-shield-alt"></i> Loss Prevention Strategies</h2>
+            <p>Tools and procedures to minimize stock loss and improve accountability</p>
+            
+            <div class="alert success">
+                <i class="fas fa-check-circle"></i> <strong>Good news:</strong> Stock loss has decreased by 15% since implementing these measures.
+            </div>
+            
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Access Control</h3>
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <p style="margin-bottom: 15px;">Limit stockroom access to authorized personnel only</p>
+                    <ul style="padding-left: 20px; margin-bottom: 20px;">
+                        <li>3 authorized personnel for BMG 178</li>
+                        <li>Access logs tracked daily</li>
+                        <li>Two-factor authentication for sensitive areas</li>
+                    </ul>
+                    <button class="btn btn-block" onclick="viewAccessLogs()">View Access Logs</button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Regular Audits</h3>
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <p style="margin-bottom: 15px;">Scheduled and surprise stock counts</p>
+                    <ul style="padding-left: 20px; margin-bottom: 20px;">
+                        <li>Weekly quick counts for high-value items</li>
+                        <li>Monthly full inventory count</li>
+                        <li>Quarterly surprise audits</li>
+                    </ul>
+                    <button class="btn btn-block" onclick="scheduleAudit()">Schedule New Audit</button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Stock Reconciliation</h3>
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <p style="margin-bottom: 15px;">Match physical stock with system records</p>
+                    <ul style="padding-left: 20px; margin-bottom: 20px;">
+                        <li>Daily reconciliation for fast-moving items</li>
+                        <li>Automated discrepancy alerts</li>
+                        <li>Root cause analysis for variances</li>
+                    </ul>
+                    <button class="btn btn-block" onclick="runReconciliation()">Run Reconciliation Now</button>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 30px;">Loss Prevention Checklist</h3>
+            <div style="background: white; padding: 25px; border-radius: 10px; margin-top: 20px;">
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <input type="checkbox" id="check1" checked>
+                    <label for="check1" style="margin-left: 10px; margin-bottom: 0;">All stock items have barcode labels</label>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <input type="checkbox" id="check2" checked>
+                    <label for="check2" style="margin-left: 10px; margin-bottom: 0;">Security cameras cover all storage areas</label>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <input type="checkbox" id="check3">
+                    <label for="check3" style="margin-left: 10px; margin-bottom: 0;">Monthly staff training on loss prevention</label>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <input type="checkbox" id="check4" checked>
+                    <label for="check4" style="margin-left: 10px; margin-bottom: 0;">Controlled access to stockroom</label>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <input type="checkbox" id="check5">
+                    <label for="check5" style="margin-left: 10px; margin-bottom: 0;">Implement RFID tracking for high-value items</label>
+                </div>
+                <button class="btn" style="margin-top: 10px;" onclick="updateChecklist()">Update Checklist</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>BMG Branch 178 Stock Management System | Version 2.1 | Last Updated: October 2023</p>
+            <p>For support contact: support@bmgworld.net | Ext: 178</p>
+        </div>
+    </div>
+
+    <script src="BR178.js"></script>
+</body>
+</html>
