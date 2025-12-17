@@ -1,0 +1,55 @@
+# Jekyll configuration for GitHub Pages deployment
+# Site settings
+title: BMG Stock Management
+description: A comprehensive stock management system for Branch 178
+baseurl: "/BMG-Branch-178-Stock-Management"
+url: "https://D3V3LOP3R-wizard.github.io"
+author: D3V3LOP3R-wizard
+
+# Build settings
+markdown: kramdown
+theme: jekyll-theme-cayman
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Exclude files and directories
+exclude:
+  - .github/
+  - node_modules/
+  - vendor/
+  - .gitignore
+  - README.md
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock
+
+# Include specific files
+include:
+  - _redirects
+
+# Output settings
+permalink: /:categories/:year/:month/:day/:title/
+timezone: UTC
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /docs/:path/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+# kramdown options
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
